@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Loader } from '../Loader';
 import { Todo } from '../../types/Todo';
 import { getUser } from '../../api';
+import classNames from 'classnames';
 
 type Props = {
   setOpenedTodo: (todo: Todo | null) => void;
@@ -64,9 +65,11 @@ export const TodoModal: React.FC<Props> = ({
             </p>
 
             <p className="block" data-cy="modal-user">
-              {/* <strong className="has-text-success">Done</strong> */}
               <strong
-                className={`has-text-${openedTodo?.completed ? 'success' : 'danger'}`}
+                className={classNames({
+                  'has-text-success': openedTodo?.completed,
+                  'has-text-danger': !openedTodo?.completed,
+                })}
               >
                 {openedTodo?.completed ? 'Done' : 'Planned'}
               </strong>
