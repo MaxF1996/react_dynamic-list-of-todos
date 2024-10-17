@@ -3,48 +3,83 @@ import { Todo } from '../../types/Todo';
 
 type Props = {
   todos: Todo[];
+  setShowModal: (showModal: boolean) => void;
+  setOpenedTodo: (todo: Todo | null) => void;
+  openedTodo: Todo | null;
 };
 
-export const TodoList: React.FC<Props> = ({ todos }) => (
-  <table className="table is-narrow is-fullwidth">
-    <thead>
-      <tr>
-        <th>#</th>
-        <th>
-          <span className="icon">
-            <i className="fas fa-check" />
-          </span>
-        </th>
-        <th>Title</th>
-        <th> </th>
-      </tr>
-    </thead>
+export const TodoList: React.FC<Props> = ({
+  todos,
+  setShowModal,
+  setOpenedTodo,
+  openedTodo,
+}) => {
+  const handleModal = (currentOpenedTodo: Todo | null, todo: Todo) => {
+    if (todo.id === currentOpenedTodo?.id) {
+      setOpenedTodo(null);
+      setShowModal(false);
+    } else {
+      setOpenedTodo(todo);
+      setShowModal(true);
+    }
+  };
 
-    <tbody>
-      {todos.map(todo => (
-        <tr data-cy="todo" className="" key={todo.id}>
-          <td className="is-vcentered">{todo.id}</td>
-          <td className="is-vcentered">
-            {todo.completed && (
-              <span className="icon" data-cy="iconCompleted">
-                <i className="fas fa-check"></i>
-              </span>
-            )}
-          </td>
-          <td className="is-vcentered is-expanded">
-            <p className={`has-text-${todo.completed ? 'success' : 'danger'}`}>
-              {todo.title}
-            </p>
-          </td>
-          <td className="has-text-right is-vcentered">
-            <button data-cy="selectButton" className="button" type="button">
-              <span className="icon">
-                <i className="far fa-eye-slash" />
-              </span>
-            </button>
-          </td>
+  return (
+    <table className="table is-narrow is-fullwidth">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>
+            <span className="icon">
+              <i className="fas fa-check" />
+            </span>
+          </th>
+          <th>Title</th>
+          <th> </th>
         </tr>
-      ))}
-    </tbody>
-  </table>
-);
+      </thead>
+
+      <tbody>
+        {todos.map(todo => (
+          <tr
+            data-cy="todo"
+            className={
+              openedTodo?.id === todo.id ? 'has-background-info-light' : ''
+            }
+            key={todo.id}
+          >
+            <td className="is-vcentered">{todo.id}</td>
+            <td className="is-vcentered">
+              {todo.completed && (
+                <span className="icon" data-cy="iconCompleted">
+                  <i className="fas fa-check"></i>
+                </span>
+              )}
+            </td>
+            <td className="is-vcentered is-expanded">
+              <p
+                className={`has-text-${todo.completed ? 'success' : 'danger'}`}
+              >
+                {todo.title}
+              </p>
+            </td>
+            <td className="has-text-right is-vcentered">
+              <button
+                data-cy="selectButton"
+                className="button"
+                type="button"
+                onClick={() => handleModal(openedTodo, todo)}
+              >
+                <span className="icon">
+                  <i
+                    className={`far fa-eye${todo === openedTodo ? '-slash' : ''}`}
+                  />
+                </span>
+              </button>
+            </td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  );
+};
