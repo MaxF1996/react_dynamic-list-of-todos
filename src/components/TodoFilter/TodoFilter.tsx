@@ -12,7 +12,11 @@ export const TodoFilter: React.FC<Props> = ({ setFilter, setSearch }) => {
   const debouncedSetSearch = useCallback(debounce(setSearch, 500), []);
 
   useEffect(() => {
-    debouncedSetSearch(currentSearch.trim());
+    if (currentSearch) {
+      debouncedSetSearch(currentSearch.trim());
+    } else {
+      setSearch('');
+    }
 
     return () => {
       debouncedSetSearch.cancel();
@@ -58,6 +62,7 @@ export const TodoFilter: React.FC<Props> = ({ setFilter, setSearch }) => {
               className="delete"
               onClick={() => {
                 setCurrentSearch('');
+                setSearch('');
               }}
             />
           </span>
